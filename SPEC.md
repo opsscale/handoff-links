@@ -1,6 +1,6 @@
 # Handoff links: specification
 
-Version 0.1, draft, October 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchline-site-tawny.vercel.app) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
+Version 0.2, draft, October 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchline-site-tawny.vercel.app) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
 
 The key words "must", "should" and "may" are used as in RFC 2119.
 
@@ -41,6 +41,15 @@ When an agent builds an artifact, the site:
 6. **Strips the token from anything it stores**: page-view URLs, logs and analytics. The token is kept only as its hash.
 7. **Counts a conversion** when the opener's visit goes on to complete an outcome the site defines (a purchase, a sign-up).
 
+## Share links on pages (optional)
+
+A site **may** add a handoff link to the version of a page it serves an AI assistant fetching for someone, so that any page can be handed off without a cart or quote. If it does:
+
+- the link **must** be stated as a fact ("Share link to this page: …"), never as a request or instruction to the agent;
+- the rest of the page **must** be unchanged: the same facts and claims people see;
+- it **should** go only to assistants fetching for a person right now, not to search indexes or training crawlers, and the response **must not** be cacheable, since each carries its own token;
+- the site **should** say publicly that it does this.
+
 ## The agent
 
 An agent that receives a handoff link:
@@ -76,4 +85,5 @@ A site using handoff links can report, per period and per artifact kind:
 
 ## Changes
 
+- 0.2 (October 2026): share links on pages.
 - 0.1 (October 2026): first draft.

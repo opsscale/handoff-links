@@ -26,7 +26,7 @@ Put the context in the link, the way UTM tags do for campaigns and deferred deep
 
 ## Read the spec
 
-[SPEC.md](SPEC.md) (v0.1, draft): the link format, what a site does, what an agent does, privacy requirements, and what to report.
+[SPEC.md](SPEC.md) (v0.2, draft): the link format, what a site does, what an agent does, privacy requirements, and what to report.
 
 [examples/minimal.mjs](examples/minimal.mjs) shows the site side in about 40 lines of Node.js, with no dependencies.
 
@@ -35,3 +35,7 @@ Put the context in the link, the way UTM tags do for campaigns and deferred deep
 This is a draft. If you build agents, run a site agents shop on, or work on agent protocols, we'd like to hear what's missing: open an issue.
 
 Maintained by [Punchline Analytics](https://punchline-site-tawny.vercel.app), which implements it ([guide](https://punchline-site-tawny.vercel.app/docs/handoffs)).
+
+## License
+
+The specification (SPEC.md and this README) is licensed under [CC BY 4.0](LICENSE-SPEC): implement it, copy it, adapt it, with credit. The code in [examples/](examples/) is under the [MIT License](LICENSE-CODE).
