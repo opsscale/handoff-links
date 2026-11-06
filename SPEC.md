@@ -41,7 +41,7 @@ When an agent builds an artifact, the site:
 6. **Strips the token from anything it stores**: page-view URLs, logs and analytics. The token is kept only as its hash.
 7. **Counts a conversion** when the opener's visit goes on to complete an outcome the site defines (a purchase, a sign-up).
 
-After saving, the site **may** send the agent straight to the handoff link (a redirect to `open_url`), so that an agent that passes on the page it's on passes on the right one. If it does, that page **should** send `Referrer-Policy: same-origin` or stricter, so the token isn't sent to other sites, and the agent's own open is recorded and later replaced by the first person's, as in step 5.
+After saving, the site **may** send the agent straight to the handoff link (a redirect to `open_url`), so that an agent that passes on the page it's on passes on the right one. If it does, that page **should** send `Referrer-Policy: same-origin` or stricter, so the token isn't sent to other sites, and the agent's own open is recorded and later replaced by the first person's, as in step 5. In our tests this didn't help, and sites **should not** rely on it in place of a receipt: one agent's fetch tool reported the address it asked for rather than where the redirect ended, and another removed the token when passing on the address it landed on.
 
 ## The receipt
 
