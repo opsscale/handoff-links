@@ -1,6 +1,6 @@
 # Handoff links: specification
 
-Version 0.2, draft, October 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchline-site-tawny.vercel.app) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
+Version 0.3, draft, November 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchlineanalytics.com) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
 
 The key words "must", "should" and "may" are used as in RFC 2119.
 
@@ -33,13 +33,36 @@ https://shop.example/cart/8431?pl_ho=Q7mZp2KxW9aBc4DeF6gHj8Lk
 
 When an agent builds an artifact, the site:
 
-1. **Mints a token** and returns the handoff link to the agent, for example in the page, an API response or a structured receipt.
+1. **Mints a token** and returns the handoff link to the agent, in the page or the response that shows what was built, with a [receipt](#the-receipt).
 2. **Stores only a one-way hash** of the token (SHA-256 is recommended), never the token itself, with: the artifact's kind, its value and currency if any, when the link expires, and a reference to the agent's session if the site can tie one.
 3. **Sets an expiry.** Links **should** expire after 30 days by default and **must not** last more than 90.
 4. **Records opens.** When a request arrives with a well-formed `pl_ho` token, the site hashes it, looks it up, and if the link exists and hasn't expired, records the open against that visit. Malformed, unknown and expired tokens are ignored silently.
 5. **Credits the first person.** Link previews, scanners and agents may fetch the link before the user does. The site **should** record those opens, but credit the first open by a person as the handoff's opener, replacing an earlier automated one.
 6. **Strips the token from anything it stores**: page-view URLs, logs and analytics. The token is kept only as its hash.
 7. **Counts a conversion** when the opener's visit goes on to complete an outcome the site defines (a purchase, a sign-up).
+
+## The receipt
+
+Next to what was built, the site **should** show a receipt for agents: a short JSON object that names the one link to pass on. Agents reading a page with several links often pick the wrong one, or send the page they're on. In our tests a receipt took one agent from 2 of 6 links passed on unchanged to 6 of 6, whether or not its user had asked for a link ([results](https://punchlineanalytics.com/blog/do-ai-agents-pass-links-on)).
+
+```
+Receipt for software agents:
+{
+  "kind": "quote",
+  "summary": "Team plan + SMS reminders",
+  "value": 118,
+  "currency": "USD",
+  "expires_at": "2026-11-12T15:00:00Z",
+  "open_url": "https://shop.example/quote/8431?pl_ho=Xq3…",
+  "next_step": "Give open_url to the person this quote is for, unchanged."
+}
+```
+
+- It **must** have `open_url` (the handoff link) and `next_step`.
+- `next_step` **must** only say to pass `open_url` to the person the artifact is for. It **must not** ask the agent to do anything else.
+- It **should** have `kind`, `expires_at` and, where they apply, `summary`, `value` and `currency`, so the agent can describe the link when it passes it on.
+- It **should** appear as text in the page or response, labelled "Receipt for software agents:", where an agent reading the page or a screenshot of it will see it. It **may** also be in a `<script type="application/json">` element for agents that read the HTML.
+- Everything in it **must** be true of the artifact, and it **must not** contain personal data.
 
 ## Share links on pages (optional)
 
@@ -55,6 +78,7 @@ A site **may** add a handoff link to the version of a page it serves an AI assis
 An agent that receives a handoff link:
 
 - **should** pass it to its user unchanged, as a link they can open;
+- **should**, when the page has a [receipt](#the-receipt), pass on its `open_url`, not the address of the page it is on;
 - **should not** open it itself after handing it over (opening it to check it works, before, is fine);
 - **may** show the artifact's summary next to it ("Your cart: 2 items, $249. Open it to check out").
 
@@ -81,9 +105,10 @@ A site using handoff links can report, per period and per artifact kind:
 
 ### Punchline Analytics
 
-`POST /v1/handoffs` mints links (the site's server calls it with the artifact and, optionally, the agent's request); Punchline's edge install or browser snippet records opens; `GET /v1/handoffs` and **AI & agents → Handoffs** report them. See [Punchline's handoff links guide](https://punchline-site-tawny.vercel.app/docs/handoffs).
+`POST /v1/handoffs` mints links (the site's server calls it with the artifact and, optionally, the agent's request); Punchline's edge install or browser snippet records opens; `GET /v1/handoffs` and **AI & agents → Handoffs** report them. See [Punchline's handoff links guide](https://punchlineanalytics.com/docs/handoffs).
 
 ## Changes
 
+- 0.3 (November 2026): the receipt for agents.
 - 0.2 (October 2026): share links on pages.
 - 0.1 (October 2026): first draft.

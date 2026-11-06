@@ -18,6 +18,21 @@ export function mintHandoff(artifactUrl, { kind = "other", value = null, currenc
   return url.toString(); // give this to the agent; never store the token itself
 }
 
+/** 1b. The receipt for agents (SPEC.md, "The receipt"): show it next to what was built. */
+export function handoffReceipt(openUrl, { kind = "other", summary = null, value = null, currency = null, expiresAt } = {}) {
+  const noun = { cart: "cart", quote: "quote", configuration: "configuration", booking: "booking" }[kind] ?? "link";
+  const receipt = {
+    kind,
+    ...(summary ? { summary } : {}),
+    ...(value !== null ? { value } : {}),
+    ...(currency ? { currency } : {}),
+    ...(expiresAt ? { expires_at: new Date(expiresAt).toISOString() } : {}),
+    open_url: openUrl,
+    next_step: `Give open_url to the person this ${noun} is for, unchanged.`,
+  };
+  return `Receipt for software agents:\n${JSON.stringify(receipt, null, 2)}`;
+}
+
 /** 2. A request arrived: record the open. `isPerson` comes from your own bot detection. */
 export function recordOpen(requestUrl, { visitId, isPerson }) {
   const token = new URL(requestUrl).searchParams.get("pl_ho");

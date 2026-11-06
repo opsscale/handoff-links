@@ -34,7 +34,7 @@ Put the context in the link, the way UTM tags do for campaigns and deferred deep
 
 This is a draft. If you build agents, run a site agents shop on, or work on agent protocols, we'd like to hear what's missing: open an issue.
 
-Maintained by [Punchline Analytics](https://punchline-site-tawny.vercel.app), which implements it ([guide](https://punchline-site-tawny.vercel.app/docs/handoffs)).
+Maintained by [Punchline Analytics](https://punchlineanalytics.com), which implements it ([guide](https://punchlineanalytics.com/docs/handoffs)).
 
 ## License
 
