@@ -1,6 +1,6 @@
 # Handoff links: specification
 
-Version 0.3, draft, November 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchlineanalytics.com) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
+Version 0.4, draft, November 2026. A convention for passing work an AI agent did on a website (a cart, a quote, a configuration, a booking) to the person the agent works for, so the site can connect the two without identifying anyone. [Punchline Analytics](https://punchlineanalytics.com) implements it; anyone can. Comments and proposals are welcome as GitHub issues.
 
 The key words "must", "should" and "may" are used as in RFC 2119.
 
@@ -41,6 +41,8 @@ When an agent builds an artifact, the site:
 6. **Strips the token from anything it stores**: page-view URLs, logs and analytics. The token is kept only as its hash.
 7. **Counts a conversion** when the opener's visit goes on to complete an outcome the site defines (a purchase, a sign-up).
 
+After saving, the site **may** send the agent straight to the handoff link (a redirect to `open_url`), so that an agent that passes on the page it's on passes on the right one. If it does, that page **should** send `Referrer-Policy: same-origin` or stricter, so the token isn't sent to other sites, and the agent's own open is recorded and later replaced by the first person's, as in step 5.
+
 ## The receipt
 
 Next to what was built, the site **should** show a receipt for agents: a short JSON object that names the one link to pass on. Agents reading a page with several links often pick the wrong one, or send the page they're on. In our tests a receipt took one agent from 2 of 6 links passed on unchanged to 6 of 6, whether or not its user had asked for a link ([results](https://punchlineanalytics.com/blog/do-ai-agents-pass-links-on)).
@@ -79,6 +81,7 @@ An agent that receives a handoff link:
 
 - **should** pass it to its user unchanged, as a link they can open;
 - **should**, when the page has a [receipt](#the-receipt), pass on its `open_url`, not the address of the page it is on;
+- **should** show the link as a visible address its user can copy, not only as a citation or footnote, which is lost when the answer is copied as text;
 - **should not** open it itself after handing it over (opening it to check it works, before, is fine);
 - **may** show the artifact's summary next to it ("Your cart: 2 items, $249. Open it to check out").
 
@@ -109,6 +112,7 @@ A site using handoff links can report, per period and per artifact kind:
 
 ## Changes
 
+- 0.4 (November 2026): agents show the link as a visible address; sites may land the agent on the handoff link after saving.
 - 0.3 (November 2026): the receipt for agents.
 - 0.2 (October 2026): share links on pages.
 - 0.1 (October 2026): first draft.
